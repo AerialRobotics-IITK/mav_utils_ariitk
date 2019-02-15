@@ -30,7 +30,7 @@
     <include file="$(find vrpn_client_ros)/launch/sample.launch"/>
 
     <!-- pose_to_odom -->
-   <node pkg ="mav_utils_ariitk" type="bk_imu_vicon.py" name="pose_to_odom"/>
+   <node pkg ="mav_utils_ariitk" type="imu_vicon_avg.py" name="pose_to_odom"/>
 
    <!-- <node pkg="mav_trajectory_generation_ros" type="trajectory_sampler_node" name="my_sampler_node" clear_params="true" output="screen"/> 
    <node pkg="mav_trajectory_generation_ros" type="tracker" name="tracking_node" clear_params="true" output="screen"/> -->
