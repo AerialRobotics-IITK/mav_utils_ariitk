@@ -1,0 +1,47 @@
+<launch>
+  <arg name="mav_name" default="f_450"/>
+  <arg name="child_frame_id" default="$(arg mav_name)/base_link"/>
+  <arg name="publish_tf" default="true"/>
+  <arg name="vicon_fps" default="50"/>
+  <arg name="output" default="screen"/>
+  <arg name="gcs_url" default="udp://@172.27.20.73:14550"/>
+
+	<group ns="$(arg mav_name)">
+    <!-- nMPC_node -->      
+    <node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
+      <remap from="odometry" to="odometry" />
+      <rosparam file="$(find mav_nonlinear_mpc)/resources/nonlinear_mpc_$(arg mav_name).yaml" />
+      <rosparam file="$(find mav_disturbance_observer)/resources/disturbance_observer_$(arg mav_name).yaml"/>
+      <remap from="rc" to="mavros/rc/in"/>
+      <param name="reference_frame" value="world"/> 
+      <param name="simulation" value="false"/> 
+	    <param name="verbose" value="false"/>
+      <param name="autopilot_interface" value="mavros"/>
+      <remap from="command/roll_pitch_yawrate_thrust" to="mavros/setpoint_raw/roll_pitch_yawrate_thrust"/>
+    </node>
+
+    <!-- mavros_node -->
+    <node pkg="mavros" type="mavros_node" name="mavros" output="screen">
+	    <rosparam command="load" file="$(find mavros)/launch/px6_config.yaml" />
+	    <param name="gcs_url" value="$(arg gcs_url)" />
+    </node>
+    
+    <!-- vrpn_client_node -->
+    <include file="$(find vrpn_client_ros)/launch/sample.launch"/>
+
+    <!-- pose_to_odom -->
+   <node pkg ="mav_utils_ariitk" type="bk_imu_vicon.py" name="pose_to_odom"/>
+
+   <!-- <node pkg="mav_trajectory_generation_ros" type="trajectory_sampler_node" name="my_sampler_node" clear_params="true" output="screen"/> 
+   <node pkg="mav_trajectory_generation_ros" type="tracker" name="tracking_node" clear_params="true" output="screen"/> -->
+
+   <!-- <node pkg="mav_utils_ariitk" type="collector.py" name="tracking_node" /> -->
+
+   <!-- <node name="pose_sensor" pkg="msf_updates" type="pose_sensor" clear_params="true" output="screen">
+      <remap from="msf_updates/transform_input" to="transform" />
+      <remap from="msf_core/imu_state_input" to="mavros/imu/data" />
+    <rosparam file="$(find mav_linear_mpc)/resources/msf_parameters_sim.yaml"/>
+    </node>-->
+
+  </group>
+</launch>
