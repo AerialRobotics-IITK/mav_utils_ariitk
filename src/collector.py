@@ -127,36 +127,38 @@ target_pose.pose.position.z = target[2]
 
 
 pose_pub.publish(target_pose)
-np.random.seed(125)
+np.random.seed(int(time.time()))
 
 while not rospy.is_shutdown():
 
-	x_f.append(float(odom.pose.pose.position.x))
-	y_f.append(float(odom.pose.pose.position.y))
-	z_f.append(float(odom.pose.pose.position.z))
+	if counter > 0:
 
-	vx_f.append(float(odom.twist.twist.linear.x))
-	vy_f.append(float(odom.twist.twist.linear.y))
-	vz_f.append(float(odom.twist.twist.linear.z))
+		x_f.append(float(odom.pose.pose.position.x))
+		y_f.append(float(odom.pose.pose.position.y))
+		z_f.append(float(odom.pose.pose.position.z))
 
-	(roll,pitch, yaw) = quaternion_to_euler_angle(odom.pose.pose.orientation.w, odom.pose.pose.orientation.x , odom.pose.pose.orientation.y, odom.pose.pose.orientation.z)
-	r_f.append(float(math.radians(roll)))
-	p_f.append(float(math.radians(pitch)))
-	yaw_f.append(float(math.radians(yaw)))
+		vx_f.append(float(odom.twist.twist.linear.x))
+		vy_f.append(float(odom.twist.twist.linear.y))
+		vz_f.append(float(odom.twist.twist.linear.z))
 
-	rs_f.append(float(vrpn.twist.angular.x))
-	ps_f.append(float(vrpn.twist.angular.y))
-	ys_f.append(float(vrpn.twist.angular.z))
+		(roll,pitch, yaw) = quaternion_to_euler_angle(odom.pose.pose.orientation.w, odom.pose.pose.orientation.x , odom.pose.pose.orientation.y, odom.pose.pose.orientation.z)
+		r_f.append(float(math.radians(roll)))
+		p_f.append(float(math.radians(pitch)))
+		yaw_f.append(float(math.radians(yaw)))
+
+		rs_f.append(float(vrpn.twist.angular.x))
+		ps_f.append(float(vrpn.twist.angular.y))
+		ys_f.append(float(vrpn.twist.angular.z))
 
 
-	x_sp.append(target[0])
-	y_sp.append(target[1])
-	z_sp.append(target[2])
+		x_sp.append(target[0])
+		y_sp.append(target[1])
+		z_sp.append(target[2])
 
-	roll_sp.append(rpyth.roll)
-	pitch_sp.append(rpyth.pitch)
-	yaw_rate_sp.append(rpyth.yaw_rate)
-	thrust_sp.append(rpyth.thrust.z)
+		roll_sp.append(rpyth.roll)
+		pitch_sp.append(rpyth.pitch)
+		yaw_rate_sp.append(rpyth.yaw_rate)
+		thrust_sp.append(rpyth.thrust.z)
 
 
 
