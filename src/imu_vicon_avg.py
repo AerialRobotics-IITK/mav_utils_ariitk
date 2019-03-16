@@ -67,7 +67,7 @@ def quaternion_to_euler_angle(w, x, y, z):
 
 rospy.init_node('pose_to_odom')
 
-vicon_sub = rospy.Subscriber('vrpn_client_node/f_450/pose', PoseStamped, vicon_cb, queue_size=100)
+vicon_sub = rospy.Subscriber('vrpn_client_node/stormbreaker/pose', PoseStamped, vicon_cb, queue_size=100)
 odom_pub = rospy.Publisher('odometry', Odometry, queue_size=100)
 
 
@@ -113,7 +113,7 @@ while not rospy.is_shutdown():
 
 		odom = Odometry()
 		odom.header.frame_id = '/world'
-		odom.child_frame_id = '/f_450/base_link'
+		odom.child_frame_id = '/sb/base_link'
 		odom.header.stamp = rospy.Time.now()
 
 		odom.pose.pose.position.x = pose.pose.position.x
@@ -143,7 +143,7 @@ while not rospy.is_shutdown():
 		odom_pub.publish(odom)
 
 		br = tf.TransformBroadcaster()
-		br.sendTransform((x,y,z),[pose.pose.orientation.x, pose.pose.orientation.y,pose.pose.orientation.z,pose.pose.orientation.w],rospy.Time.now(), "/f_450/base_link","/world")
+		br.sendTransform((x,y,z),[pose.pose.orientation.x, pose.pose.orientation.y,pose.pose.orientation.z,pose.pose.orientation.w],rospy.Time.now(), "/sb/base_link","/world")
 
 	else:
 		x_prev = x
