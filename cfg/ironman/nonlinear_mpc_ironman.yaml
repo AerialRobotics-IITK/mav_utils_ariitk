@@ -12,27 +12,59 @@
 
 ## Controller Parameters:
 mass: 1.68
-roll_time_constant: 0.185622
-roll_gain: 1.037192
-pitch_time_constant: 0.163042
-pitch_gain: 0.966195
+roll_time_constant: 0.177385
+roll_gain: 0.979938
+pitch_time_constant: 0.173440
+pitch_gain: 0.962765
 linear_drag_coefficients: [0.01, 0.01, 0]
 
 # dynamic config default values:
-q_x : 40
-q_y : 40
+# q_x : 100
+# q_y : 100
+# q_z : 70
+
+# q_vx : 15
+# q_vy : 15
+# q_vz : 10
+
+# q_roll : 15
+# q_pitch: 15
+
+# r_roll  : 250
+# r_pitch : 250
+# r_thrust : 5
+
+# roll_max: deg(10.0)
+# pitch_max: deg(10.0)
+# thrust_min: 5
+# thrust_max: 20
+
+# K_yaw: 1.8
+
+# Ki_xy: 0.2
+# Ki_z: 0.3
+# position_error_integration_limit: 20
+# antiwindup_ball: 0.4
+
+# enable_offset_free : false
+# enable_integrator : true
+
+# sampling_time: 0.05   #IMPORTANT: set this equal to the rate of odometry msg
+# prediction_sampling_time: 0.1
+q_x : 100
+q_y : 100
 q_z : 150
 
-q_vx : 80
-q_vy : 80
-q_vz : 100
+q_vx : 15
+q_vy : 15
+q_vz : 10
 
-q_roll : 30
-q_pitch: 30
+q_roll : 5
+q_pitch: 5
 
-r_roll  : 50
-r_pitch : 50
-r_thrust : 1
+r_roll  : 250
+r_pitch : 250
+r_thrust : 5
 
 roll_max: deg(20.0)
 pitch_max: deg(20.0)
@@ -43,11 +75,11 @@ K_yaw: 1.8
 
 Ki_xy: 0.2
 Ki_z: 0.3
-position_error_integration_limit: 2
+position_error_integration_limit: 20
 antiwindup_ball: 0.4
 
-enable_offset_free : false
+enable_offset_free : true
 enable_integrator : true
 
-sampling_time: 0.02    #IMPORTANT: set this equal to the rate of odometry msg
+sampling_time: 0.034    #IMPORTANT: set this equal to the rate of odometry msg
 prediction_sampling_time: 0.1

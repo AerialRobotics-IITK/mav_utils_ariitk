@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
 	<arg name="mav_name" default="ironman"/>
-	<arg name="calibration_offset" default="-0.041"/>
+	<arg name="calibration_offset" default="-0.0008"/>
 	<arg name="cam_fps" default="20"/>
-    <arg name="expose_us" default="20000"/>
+    <arg name="expose_us" default="500"/>
     <arg name="device" default="26807376"/>
     <arg name="indoor" default="false"/>
-    <arg name="fcu_url_vio" default="/dev/viimu:921600" />
-    <arg name="fcu_url_pilot" default="/dev/pilot:921600" />
-    <arg name="gcs_url_vio" default="" />
-    <arg name="gcs_url_pilot" default="udp://@172.17.79.199:14550" />
+    <arg name="fcu_url_vio" default="/dev/ttyACM1:921600" />
+    <arg name="fcu_url_pilot" default="/dev/ttyACM0:921600" />
+    <arg name="gcs_url_pilot" default="udp://@192.168.100.8:14550" />
+    <arg name="gcs_url_vio" default="udp://@172.27.20.73:14550" />
     <arg name="fcu_protocol" default="v2.0" />
     <arg name="log_output_mavros" default="log" />
     <arg name="respawn_mavros" default="false" />
     <arg name="2k_exp" default="true"/>
     <arg name="4k_exp" default="false"/>
     <arg name="20k_exp" default="false"/>
+    <arg name="markerId"        default="582"/>
+    <arg name="markerSize"      default="0.11"/>    <!-- in m -->
+    <arg name="eye"             default="left"/>
+    <arg name="marker_frame"    default="aruco_marker_frame"/>
+    <arg name="ref_frame"       default=""/>  <!-- leave empty and the pose will be published wrt param parent_name -->
+    <arg name="corner_refinement" default="LINES" /> <!-- NONE, HARRIS, LINES, SUBPIX -->
 
     <!-- <group if="$(arg 2k_exp)">
     	<arg name="expose_us" value="2000"/>
@@ -37,12 +43,13 @@
 	<group ns="$(arg mav_name)">
 
 		<node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
-			<remap from="odometry" to="/odometry" />
+			<remap from="odometry" to="tfmini_odom" />
 			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/disturbance_observer_$(arg mav_name).yaml"/>
 			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/nonlinear_mpc_$(arg mav_name).yaml"/>
 			<remap from="rc" to="pilot/rc/in"/>
 			<param name="reference_frame" value="world"/> 
 			<param name="simulation" value="false"/> 
+			<param name="use_rc_teleop" value="true"/>
 			<param name="verbose" value="false"/>
 			<param name="autopilot_interface" value="mavros"/>
 			<remap from="command/roll_pitch_yawrate_thrust" to="pilot/setpoint_raw/roll_pitch_yawrate_thrust"/>
@@ -56,7 +63,38 @@
 			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_config.yaml" />
 		</node>
 
-		<node pkg="mavros" type="mavros_node" name="viimu" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
+    	<include file="$(find tfmini_ros)/launch/tfmini.launch"/>
+
+		<!-- <node name="object_pos" type="object_pos" pkg="aruco_ros">
+        	<remap from="imu_data" to="pilot/imu/data" />
+    	</node>
+
+    	<node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+	      <param name="video_device" value="/dev/video0" />
+	      <param name="image_width" value="640" />
+	      <param name="image_height" value="480" />
+	      <param name="pixel_format" value="yuyv" />
+	      <param name="camera_frame_id" value="usb_cam" />
+	      <param name="io_method" value="mmap"/>
+    	</node> -->
+
+    	<!-- <node name="input" type="input" pkg="aruco_ros">
+        	<remap from="image" to="usb_cam/image_raw" />
+    	</node>
+
+    	<node pkg="aruco_ros" type="single" name="aruco_single">
+	        <remap from="aruco_single/camera_info" to="usb_cam/camera_info" />
+	        <remap from="aruco_single/image" to="image_converter/output_video" />
+	        <param name="image_is_rectified" value="True"/>
+	        <param name="marker_size"        value="$(arg markerSize)"/>
+	        <param name="marker_id"          value="$(arg markerId)"/>
+	        <param name="reference_frame"    value="$(arg ref_frame)"/>   
+	        <param name="camera_frame"       value="stereo_gazebo_$(arg eye)_camera_optical_frame"/>
+	        <param name="marker_frame"       value="$(arg marker_frame)" />
+	        <param name="corner_refinement"  value="$(arg corner_refinement)" />
+    	</node> -->
+
+		<!-- <node pkg="mavros" type="mavros_node" name="viimu" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
 			<param name="fcu_url" value="$(arg fcu_url_vio)" />
 			<param name="gcs_url" value="$(arg gcs_url_vio)" />
 			<remap from="viimu/cam_imu_sync/cam_imu_stamp" to="/mavros/cam_imu_sync/cam_imu_stamp"/>
@@ -66,12 +104,6 @@
 			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_config.yaml" />
 		</node>
 
-		<node pkg="rovio" type="rovio_node" name="rovio" output="screen">
-  			<param name="filter_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_filter.info"/>
-  			<param name="camera0_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_camera.yaml"/>
-  			<remap from="cam0/image_raw" to="mv/image_raw"/>
-  			<remap from="imu0" to="viimu/imu/data_raw"/>
-  		</node>
 
     	<include file="$(find bluefox2)/launch/single_node.launch">
            	<arg name="device" value="$(arg device)"/>
@@ -79,7 +111,22 @@
         	<arg name="expose_us" value="$(arg expose_us)"/>
         	<arg name="ctm" value="3"/>
 			<arg name="calibration_offset" value="$(arg calibration_offset)"/>
+			<arg name="output" value="screen"/>
     	</include>
+
+		<node pkg="rovio" type="rovio_node" name="rovio" output="screen">
+  			<param name="filter_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_filter.info"/>
+  			<param name="camera0_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_camera.yaml"/>
+  			<remap from="cam0/image_raw" to="mv/image_raw"/>
+  			<remap from="imu0" to="viimu/imu/data_raw"/>
+			<remap from ="odometry" to="pilot/local_position/odom"/> 
+  		</node> -->
+
+    	<!-- <node pkg="odom_predictor" type="odom_predictor_node" name="odom_predictor" output="screen">
+   			<remap from="odometry" to="rovio/odometry"/>
+    		<remap from="imu_bias" to="rovio/imu_biases"/>
+    		<remap from="imu" to="viimu/imu/data_raw"/>
+  		</node> -->
 
 		<!-- vrpn_client_node -->
 		<!-- <include file="$(find vrpn_client_ros)/launch/sample.launch"/> -->
@@ -90,11 +137,14 @@
 
 	 	<!-- <node name="pose_sensor_rovio" pkg="msf_updates" type="pose_sensor" clear_params="true" output="screen">
       		<remap from="msf_core/imu_state_input" to="pilot/imu/data" />
-      		<remap from="msf_updates/transform_input" to="rovio/transform" />
-      		<rosparam file="$(find mav_utils_ariitk)/cfg/sb/msf_sb_raw.yaml"/>
-		</node>
- -->
+      		<remap from="msf_updates/transform_input" to="/transform" />
+      		<rosparam file="$(find mav_utils_ariitk)/cfg/msf/msf_gps.yaml"/>
+		</node> -->
+
 	</group>
 		
 </launch>
 
+    
+
+ 

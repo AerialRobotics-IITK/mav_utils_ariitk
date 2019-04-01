@@ -3,7 +3,7 @@ import rospy
 from sensor_msgs.msg import Imu
 from nav_msgs.msg import Odometry
 import math
-from geometry_msgs.msg import PoseStamped, TransformStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped, TransformStamped
 from tf2_msgs.msg import TFMessage
 from collections import deque
 import tf
@@ -35,7 +35,7 @@ class QueueBuffer(object):
 		return self.count
 
 
-pose = PoseStamped()
+pose = PoseWithCovarianceStamped()
 def vicon_cb(data):
 	global pose
 	pose = data
@@ -67,8 +67,8 @@ def quaternion_to_euler_angle(w, x, y, z):
 
 rospy.init_node('pose_to_odom')
 
-vicon_sub = rospy.Subscriber('vrpn_client_node/ironman/pose', PoseStamped, vicon_cb, queue_size=100)
-odom_pub = rospy.Publisher('odom', Odometry, queue_size=100)
+vicon_sub = rospy.Subscriber('/ironman/rovio/pose_with_covariance_stamped', PoseWithCovarianceStamped, vicon_cb, queue_size=100)
+odom_pub = rospy.Publisher('odometry', Odometry, queue_size=100)
 
 
 rate = rospy.Rate(20.0)
@@ -86,15 +86,15 @@ prev_vz = QueueBuffer(window_size)
 
 while not rospy.is_shutdown():
 
-	(v_roll,v_pitch,v_yaw) = quaternion_to_euler_angle(pose.pose.orientation.w, pose.pose.orientation.x , pose.pose.orientation.y, pose.pose.orientation.z)
+	(v_roll,v_pitch,v_yaw) = quaternion_to_euler_angle(pose.pose.pose.orientation.w, pose.pose.pose.orientation.x , pose.pose.pose.orientation.y, pose.pose.pose.orientation.z)
 	v_phi = float((v_roll))
 	v_theta = float((v_pitch))
 	v_psi = float((v_yaw))
 
 		
-	x = pose.pose.position.x
-	y = pose.pose.position.y
-	z = pose.pose.position.z
+	x = pose.pose.pose.position.x
+	y = pose.pose.pose.position.y
+	z = pose.pose.pose.position.z
 
 	yaw = math.radians(v_psi)
 
@@ -113,17 +113,17 @@ while not rospy.is_shutdown():
 
 		odom = Odometry()
 		odom.header.frame_id = '/world'
-		odom.child_frame_id = '/ironman2/base_link'
+		odom.child_frame_id = '/ironman/base_link'
 		odom.header.stamp = rospy.Time.now()
 
-		odom.pose.pose.position.x = pose.pose.position.x
-		odom.pose.pose.position.y = pose.pose.position.y
-		odom.pose.pose.position.z = pose.pose.position.z
+		odom.pose.pose.position.x = pose.pose.pose.position.x
+		odom.pose.pose.position.y = pose.pose.pose.position.y
+		odom.pose.pose.position.z = pose.pose.pose.position.z
 
-		odom.pose.pose.orientation.x = pose.pose.orientation.x
-		odom.pose.pose.orientation.y = pose.pose.orientation.y
-		odom.pose.pose.orientation.z = pose.pose.orientation.z
-		odom.pose.pose.orientation.w = pose.pose.orientation.w
+		odom.pose.pose.orientation.x = pose.pose.pose.orientation.x
+		odom.pose.pose.orientation.y = pose.pose.pose.orientation.y
+		odom.pose.pose.orientation.z = pose.pose.pose.orientation.z
+		odom.pose.pose.orientation.w = pose.pose.pose.orientation.w
 
 		prev_vx.insert(twist_x)
 		prev_vy.insert(twist_y)
@@ -143,7 +143,7 @@ while not rospy.is_shutdown():
 		odom_pub.publish(odom)
 
 		br = tf.TransformBroadcaster()
-		br.sendTransform((x,y,z),[pose.pose.orientation.x, pose.pose.orientation.y,pose.pose.orientation.z,pose.pose.orientation.w],rospy.Time.now(), "/ironman2/base_link","/world")
+		br.sendTransform((x,y,z),[pose.pose.pose.orientation.x, pose.pose.pose.orientation.y,pose.pose.pose.orientation.z,pose.pose.pose.orientation.w],rospy.Time.now(), "/ironman/base_link","/world")
 
 	else:
 		x_prev = x

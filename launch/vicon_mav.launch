@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?> 
 <launch>
 	<arg name="mav_name" default="ironman"/>
 		<arg name="gcs_url" default="udp://@172.17.79.199:14550"/>
@@ -6,25 +7,25 @@
 	<group ns="$(arg mav_name)">
 		
 		<!-- nMPC_node -->      
-		<node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
+		<!-- <node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
 			<remap from="odometry" to="odometry" />
-			<rosparam file="$(find mav_nonlinear_mpc)/resources/nonlinear_mpc_$(arg mav_name).yaml" />
-			<rosparam file="$(find mav_disturbance_observer)/resources/disturbance_observer_$(arg mav_name).yaml"/>
+			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/disturbance_observer_$(arg mav_name).yaml"/>
+			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/nonlinear_mpc_$(arg mav_name).yaml"/>
 			<remap from="rc" to="mavros/rc/in"/>
 			<param name="reference_frame" value="world"/> 
 			<param name="simulation" value="false"/> 
 			<param name="verbose" value="false"/>
 			<param name="autopilot_interface" value="mavros"/>
 			<remap from="command/roll_pitch_yawrate_thrust" to="mavros/setpoint_raw/roll_pitch_yawrate_thrust"/>
-		</node>
+		</node> -->
 
-		<!-- mavros_node -->
+		<!-- mavros_node
 		<node pkg="mavros" type="mavros_node" name="mavros" output="screen">
 			<rosparam command="load" file="$(find mavros)/launch/px6_config.yaml" />
 			<param name="gcs_url" value="$(arg gcs_url)" />
 			<param name="fcu_url" value="$(arg fcu_url_pilot)" />
 		</node>
-		
+		 -->
 		<!-- vrpn_client_node -->
 		<include file="$(find vrpn_client_ros)/launch/sample.launch"/>
 
