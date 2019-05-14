@@ -51,8 +51,8 @@ linear_drag_coefficients: [0.01, 0.01, 0]
 
 # sampling_time: 0.05   #IMPORTANT: set this equal to the rate of odometry msg
 # prediction_sampling_time: 0.1
-q_x : 100
-q_y : 100
+q_x : 80
+q_y : 80
 q_z : 150
 
 q_vx : 15

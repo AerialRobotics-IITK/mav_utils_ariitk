@@ -26,7 +26,7 @@ def obj_cb(data):
 rospy.init_node('offboard')
 
 # global_sub = rospy.Subscriber('/mavros/global_position/local', Odometry, odom_cb, queue_size=100)
-local_sub = rospy.Subscriber('/ironman/pilot/local_position/odom', Odometry, odom_cb, queue_size=100)
+local_sub = rospy.Subscriber('/ironman/tfmini_odom', Odometry, odom_cb, queue_size=100)
 obj_sub = rospy.Subscriber('/ironman/object/pose', PoseStamped, obj_cb, queue_size=100)
 #obj_sub = rospy.Subscriber('/aruco_single/pose', PoseStamped, obj_cb, queue_size=100)
 
@@ -42,12 +42,20 @@ while not rospy.is_shutdown():
     if (flag_):
         pose_ = PoseStamped()
         pose_.header.stamp = rospy.Time.now()
-        pose_.pose.position.x = odom_.pose.pose.position.x +  obj_.pose.position.x
-        pose_.pose.position.y = odom_.pose.pose.position.y +  obj_.pose.position.y
-        pose_.pose.position.z = odom_.pose.pose.position.z - 0.001*(count)
+        pose_.pose.position.x = obj_.pose.position.x 
+        pose_.pose.position.y = obj_.pose.position.y 
+        if((odom_.pose.pose.position.z-0.002*count)>1.5):
+            pose_.pose.position.z = odom_.pose.pose.position.z - 0.002*(count)
+            h =  odom_.pose.pose.position.z
+        else:
+            pose_.pose.position.z = 1.5
         pose_.pose.orientation = odom_.pose.pose.orientation
-        count = count +1
-        flag_ = False
-        set_pub.publish(pose_)
-
+        count=count+1
+        if(count%20==0 ):
+	   # count = count +1
+            flag_ = False
+	    #pose_.pose.position.x = odom_.pose.pose.position.x +  obj_.pose.position.x
+            #pose_.pose.position.y = odom_.pose.pose.position.y +  obj_.pose.position.y
+            set_pub.publish(pose_)
+            count=count+1
     rate.sleep()
