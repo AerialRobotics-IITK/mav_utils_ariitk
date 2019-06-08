@@ -5,8 +5,8 @@
 
 # setpoint_raw
 setpoint_raw:
-  thrust_scaling_factor: 0.025
-  system_mass_kg: 1.6
+  thrust_scaling_factor: 0.0437
+  system_mass_kg: 0.880
   yaw_rate_scaling_factor: 2.0
 
 # sys_status & sys_time connection options

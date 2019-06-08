@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <launch>
-	<arg name="mav_name" default="ironman"/>
+	<arg name="mav_name" default="f450"/>
 	<arg name="calibration_offset" default="-0.0008"/>
 	<arg name="cam_fps" default="20"/>
     <arg name="expose_us" default="500"/>
     <arg name="device" default="26807376"/>
     <arg name="indoor" default="false"/>
     <!-- <arg name="fcu_url_vio" default="/dev/ttyACM1:921600" /> -->
-    <arg name="fcu_url_pilot" default="/dev/pilot:921600" />
-    <arg name="gcs_url_pilot" default="udp://@192.168.43.161:14550" />
+    <arg name="fcu_url_pilot" default="/dev/ttyACM0:921600" />
+    <arg name="gcs_url_pilot" default="udp://@192.168.0.101:14550" />
     <!-- <arg name="gcs_url_vio" default="udp://@172.27.20.73:14550" /> -->
     <arg name="fcu_protocol" default="v2.0" />
     <arg name="log_output_mavros" default="log" />
@@ -43,7 +43,7 @@
 	<group ns="$(arg mav_name)">
 
 		<node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
-			<remap from="odometry" to="tfmini_odom" />
+			<remap from="odometry" to="pilot/local_position/odom" />
 			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/disturbance_observer_$(arg mav_name).yaml"/>
 			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/nonlinear_mpc_$(arg mav_name).yaml"/>
 			<remap from="rc" to="pilot/rc/in"/>
@@ -53,7 +53,7 @@
 			<param name="verbose" value="false"/>
 			<param name="autopilot_interface" value="mavros"/>
 			<remap from="command/roll_pitch_yawrate_thrust" to="pilot/setpoint_raw/roll_pitch_yawrate_thrust"/>
-		</node>
+		</node> 
 
 		<node pkg="mavros" type="mavros_node" name="pilot" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
 			<param name="fcu_url" value="$(arg fcu_url_pilot)" />
@@ -63,7 +63,10 @@
 			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_config.yaml" />
 		</node>
 
-    	<include file="$(find tfmini_ros)/launch/tfmini.launch"/>
+	<include file="$(find tfmini_ros)/launch/tfmini.launch"/>
+
+		<node name="odom_tfmini" type="odom_tfmini.py" pkg="mav_utils_ariitk"/>
+		<!-- <node name="pose_avg" type="pose_avg.py" pkg="mav_utils_ariitk"/> -->
 
 		<!-- <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
 	      <param name="video_device" value="/dev/video0" />
