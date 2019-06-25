@@ -1,0 +1,13 @@
+image_width: 752
+image_height: 480
+camera_name: camv
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [409.32478641, 0.0, 377.612980949, 0.0, 407.235946877, 258.57690217, 0.0, 0.0, 1.0]
+distortion_model: equidistant
+distortion_coefficients:
+  rows: 1
+  cols: 4
+  data: [-5.01754240376e-05, 0.064251092566, -0.122102699308, 0.0690257123227]
+

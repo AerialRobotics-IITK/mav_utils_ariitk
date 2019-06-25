@@ -1,0 +1,7 @@
+<launch>
+
+    <node name="pos_stream" type="pos_stream" pkg="aruco_ros">
+            <rosparam file="$(find aruco_ros)/cfg/setpoint.yaml" />
+    </node> 
+	
+</launch>
