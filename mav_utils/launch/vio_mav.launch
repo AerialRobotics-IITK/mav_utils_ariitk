@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
 	<arg name="mav_name" default="f450"/>
 	<arg name="calibration_offset" default="-0.0008"/>
@@ -59,14 +59,14 @@
 			<param name="fcu_url" value="$(arg fcu_url_pilot)" />
 			<param name="gcs_url" value="$(arg gcs_url_pilot)" />
 			<param name="fcu_protocol" value="$(arg fcu_protocol)" />
-			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_pluginlists.yaml" />
-			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_config.yaml" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_pluginlists.yaml" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_config.yaml" />
 		</node>
 
-	<include file="$(find tfmini_ros)/launch/tfmini.launch"/>
+        <include file="$(find tfmini_ros)/launch/tfmini.launch"/>
 
-		<node name="odom_tfmini" type="odom_tfmini.py" pkg="mav_utils_ariitk"/>
-		<!-- <node name="pose_avg" type="pose_avg.py" pkg="mav_utils_ariitk"/> -->
+		<node name="odom_tfmini" type="odom_tfmini.py" pkg="mav_utils"/>
+		<!-- <node name="pose_avg" type="pose_avg.py" pkg="mav_utils"/> -->
 
 		<!-- <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
 	      <param name="video_device" value="/dev/video0" />
@@ -148,8 +148,8 @@
 			<remap from="viimu/cam_imu_sync/cam_imu_stamp" to="/mavros/cam_imu_sync/cam_imu_stamp"/>
 			<remap from="viimu/cmd/trigger_control" to="/mavros/cmd/trigger_control"/>
 			<param name="fcu_protocol" value="$(arg fcu_protocol)" />
-			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_pluginlists.yaml" />
-			<rosparam command="load" file="$(find mav_utils_ariitk)/cfg/mavros/px4_config.yaml" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_pluginlists.yaml" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_config.yaml" />
 		</node>
 
 
@@ -163,8 +163,8 @@
     	</include>
 
 		<node pkg="rovio" type="rovio_node" name="rovio" output="screen">
-  			<param name="filter_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_filter.info"/>
-  			<param name="camera0_config" value="$(find mav_utils_ariitk)/cfg/rovio/rovio_rig_camera.yaml"/>
+  			<param name="filter_config" value="$(find mav_utils)/cfg/rovio/rovio_rig_filter.info"/>
+  			<param name="camera0_config" value="$(find mav_utils)/cfg/rovio/rovio_rig_camera.yaml"/>
   			<remap from="cam0/image_raw" to="mv/image_raw"/>
   			<remap from="imu0" to="viimu/imu/data_raw"/>
 			<remap from ="odometry" to="pilot/local_position/odom"/> 
@@ -180,13 +180,13 @@
 		<!-- <include file="$(find vrpn_client_ros)/launch/sample.launch"/> -->
 
 		<!-- pose_to_odom -->
-	 	<!-- <node pkg ="mav_utils_ariitk" type="imu_vicon_avg.py" name="pose_to_odom"/> -->
+	 	<!-- <node pkg ="mav_utils" type="imu_vicon_avg.py" name="pose_to_odom"/> -->
 
 
 	 	<!-- <node name="pose_sensor_rovio" pkg="msf_updates" type="pose_sensor" clear_params="true" output="screen">
       		<remap from="msf_core/imu_state_input" to="pilot/imu/data" />
       		<remap from="msf_updates/transform_input" to="/transform" />
-      		<rosparam file="$(find mav_utils_ariitk)/cfg/msf/msf_gps.yaml"/>
+      		<rosparam file="$(find mav_utils)/cfg/msf/msf_gps.yaml"/>
 		</node> -->
 
 	</group>
