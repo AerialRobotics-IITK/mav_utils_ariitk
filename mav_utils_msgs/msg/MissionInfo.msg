@@ -1,6 +1,6 @@
 std_msgs/Header header
-std_msgs/Bool is_NMPC_on
-std_msgs/String mode
+bool is_NMPC_on
+string mode
 float64 latitude
 float64 longitude
 float64 altitude
