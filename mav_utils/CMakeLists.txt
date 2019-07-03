@@ -12,6 +12,7 @@ include_directories(${Eigen_INCLUDE_DIRS})
 
 cs_add_executable(lander src/land.cpp)
 cs_add_executable(state_estimation_node src/state_estimation_node.cpp)
+cs_add_executable(controller_switch_node src/controller_switch_node.cpp)
 
 cs_install()
 cs_export()

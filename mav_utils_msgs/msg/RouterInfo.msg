@@ -1,2 +1,3 @@
-int32[] object_id
-BBPose[] object_poses
+Header header
+int16[] object_id
+RouterData[] router_data
