@@ -43,13 +43,13 @@ int main(int argc, char **argv){
 
     while (ros::ok()){
         nh.getParam("controller_switch_node/rate", rate);
-        ros::Rate loop_rate(rate);
+        ros::Rate loopRate(rate);
 
-        if(1){
+        if(missionInfo.use_local){
             mavCommandPose.header = missionInfo.header;
             mavCommandPose.pose.position = missionInfo.local_pose;
             
-            if(missionInfo.is_NMPC_on){
+            if(missionInfo.use_nmpc){
                 std_srvs::Empty backToPosition;
                 if (backToPoseHoldClient.call(backToPosition)) ROS_INFO("NMPC on");
                 else ROS_ERROR("Failed to move in position hold");
@@ -60,7 +60,7 @@ int main(int argc, char **argv){
             else mavPoseLocalMavrosPub.publish(mavCommandPose); 
         }
 
-        else if(0){
+        else{
             mavCommandGlobalPose.header = missionInfo.header;
             mavCommandGlobalPose.latitude = missionInfo.latitude;
             mavCommandGlobalPose.longitude = missionInfo.longitude;
@@ -69,8 +69,8 @@ int main(int argc, char **argv){
             mavPoseGlobalPub.publish(mavCommandGlobalPose);
         }
 
+        loopRate.sleep();
         ros::spinOnce();
-        loop_rate.sleep();
     }
     return 0;
 }

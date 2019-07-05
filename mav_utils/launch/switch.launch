@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+	<group ns="firefly">
+
+	 	<node name="controller_switch_node" pkg="mav_utils" type="controller_switch_node" clear_params="true" output="screen">
+			
+		</node>
+	
+	</group>
+
+</launch>
