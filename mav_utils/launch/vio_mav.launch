@@ -44,8 +44,8 @@
 
 		<node name="mav_nonlinear_mpc" pkg="mav_nonlinear_mpc" type="nonlinear_mpc_node" respawn="true" clear_params="true" output="log">
 			<remap from="odometry" to="pilot/local_position/odom" />
-			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/disturbance_observer_$(arg mav_name).yaml"/>
-			<rosparam file="$(find mav_utils_ariitk)/cfg/$(arg mav_name)/nonlinear_mpc_$(arg mav_name).yaml"/>
+			<rosparam file="$(find mav_utils)/cfg/$(arg mav_name)/disturbance_observer_$(arg mav_name).yaml"/>
+			<rosparam file="$(find mav_utils)/cfg/$(arg mav_name)/nonlinear_mpc_$(arg mav_name).yaml"/>
 			<remap from="rc" to="pilot/rc/in"/>
 			<param name="reference_frame" value="world"/> 
 			<param name="simulation" value="false"/> 

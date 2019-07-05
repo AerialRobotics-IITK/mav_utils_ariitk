@@ -15,3 +15,4 @@ float32[] eigenVec
 int32[] contourX
 int32[] contourY
 bool full
+bool store
