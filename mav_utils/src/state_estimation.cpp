@@ -8,10 +8,10 @@ StateEstimation::StateEstimation(const ros::NodeHandle &nh,
                     range_finder_enable);
   px4_odom_sub =
       nh_.subscribe("odom_px4", 1, &StateEstimation::odomCallback, this);
-  px4_odom_sub = nh_.subscribe("global_pose", 1,
-                               &StateEstimation::globalPoseCallback, this);
-  px4_odom_sub = nh_.subscribe("range_finder", 1,
-                               &StateEstimation::rangeFinderCallback, this);
+  global_pose_sub = nh_.subscribe("global_pose", 1,
+                                  &StateEstimation::globalPoseCallback, this);
+  range_finder_sub = nh_.subscribe("range_finder", 1,
+                                   &StateEstimation::rangeFinderCallback, this);
 
   avoidance_pose_pub =
       nh_.advertise<mav_utils_msgs::GlobalPose>("avoidance_pose", 1, true);
@@ -20,7 +20,6 @@ StateEstimation::StateEstimation(const ros::NodeHandle &nh,
 
 void StateEstimation::globalPoseCallback(const sensor_msgs::NavSatFix &msg) {
   global_pose = msg;
-  std::cout<<"call"<<std::endl;
   avoidancePosePubCallback();
 }
 void StateEstimation::odomCallback(const nav_msgs::Odometry &msg) {
@@ -35,8 +34,10 @@ void StateEstimation::odomPubCallback() {
   nav_msgs::Odometry odom_est;
   odom_est = px4_odom;
   if (range_finder_enable) odom_est.pose.pose.position.z = range_finder.range;
-  // need to find a good velocity for rangefinder
-  // odom_est.twist.twist.linear.z = odom.twist.twist.linear.z;
+  /*
+  TODO: need to find a method for good velocity estimate
+   odom_est.twist.twist.linear.z = odom.twist.twist.linear.z;
+   */
   range_finder_odom_pub.publish(odom_est);
 }
 
