@@ -3,36 +3,36 @@
 
 	<group ns="uav0">
 	 	<node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
-			<remap from="odometry" to="pilot/local_position/odom" />
-			<remap from="mav_global_pose" to="pilot/global_position/global" />
+			<remap from="odom_px4" to="pilot/local_position/odom" />
+			<remap from="global_pose" to="pilot/global_position/global" />
 			<remap from="rangefinder" to="rangefinder" />
 			<remap from="estimated_odometry" to="odom" />
-			<remap from="mav_avoidance_pose" to="mav_avoidance_pose" />
+			<remap from="avoidance_pose" to="mav_avoidance_pose" />
 			<param name="rate" value="30.0"/>
 			<param name="rangefinder_enable" value="true"/>
 		</node>
 	</group>
-	<!-- <group ns="uav1">
+	<group ns="uav1">
 	 	<node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
-			<remap from="odometry" to="pilot/local_position/odom" />
-			<remap from="mav_global_pose" to="pilot/global_position/global" />
+			<remap from="odom_px4" to="pilot/local_position/odom" />
+			<remap from="global_pose" to="pilot/global_position/global" />
 			<remap from="rangefinder" to="rangefinder" />
 			<remap from="estimated_odometry" to="odom" />
-			<remap from="mav_avoidance_pose" to="mav_avoidance_pose" />
+			<remap from="avoidance_pose" to="mav_avoidance_pose" />
 			<param name="rate" value="30.0"/>
 			<param name="rangefinder_enable" value="false"/>
 		</node>
 	</group>
 	<group ns="uav2">
 	 	<node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
-			<remap from="odometry" to="pilot/local_position/odom" />
-			<remap from="mav_global_pose" to="pilot/global_position/global" />
+			<remap from="odom_px4" to="pilot/local_position/odom" />
+			<remap from="global_pose" to="pilot/global_position/global" />
 			<remap from="rangefinder" to="rangefinder" />
 			<remap from="estimated_odometry" to="odom" />
-			<remap from="mav_avoidance_pose" to="mav_avoidance_pose" />
+			<remap from="avoidance_pose" to="mav_avoidance_pose" />
 			<param name="rate" value="30.0"/>
 			<param name="rangefinder_enable" value="false"/>
 		</node>
-	</group> -->
+	</group>
 
 </launch>
