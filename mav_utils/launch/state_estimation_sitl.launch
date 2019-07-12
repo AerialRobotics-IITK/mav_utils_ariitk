@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
 	<group ns="uav0">
@@ -11,8 +11,9 @@
 			<param name="rate" value="30.0"/>
 			<param name="rangefinder_enable" value="true"/>
 		</node>
+	<node pkg="mav_utils" type="home_reset.sh" name="home_reset" clear_params="true"/>
 	</group>
-	<group ns="uav1">
+	<!-- <group ns="uav1">
 	 	<node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
 			<remap from="odom_px4" to="pilot/local_position/odom" />
 			<remap from="global_pose" to="pilot/global_position/global" />
@@ -33,6 +34,6 @@
 			<param name="rate" value="30.0"/>
 			<param name="rangefinder_enable" value="false"/>
 		</node>
-	</group>
+	</group> -->
 
 </launch>
