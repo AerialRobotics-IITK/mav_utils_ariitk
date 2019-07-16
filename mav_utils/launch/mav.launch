@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <arg name="mav_name" default="magnus"/>
+<arg name="mav_id" default="1"/>
+<arg name="log_output_mavros" default="log" />
+    <arg name="respawn_mavros" default="false" />
+ <arg name="fcu_url_pilot" default="/dev/ttyUSB0:921600" />
+    <arg name="gcs_url_pilot" default="udp://@192.168.0.125:14550" />
+<arg name="fcu_protocol" default="v2.0" />
+
+    <group ns="$(arg mav_name)">
+	
+        <node name="planner" pkg="imav_planner" type="planner" output="screen" clear_params="true">
+
+            <!-- parameters -->
+            <rosparam file="$(find imav_planner)/cfg/planner.yaml" command="load"/>
+
+            <!-- subscribers -->
+            <remap from="odometry" to="pilot/local_position/odom"/>
+            <remap from="drop_info" to="drop_info"/>
+            <remap from="home_info" to="home_info"/>
+            <remap from="object_poses" to="object_poses"/>
+            <remap from="helipad" to="hdetect/helipad_position"/>
+            <remap from="global_pose" to="pilot/global_position/global"/>
+            <remap from="mission/reached" to="pilot/mission/reached"/>
+            <remap from="state" to="pilot/state" />
+
+            <!-- publishers -->
+            <remap from="planner/curr_state" to="planner/curr_state"/>
+            <remap from="servo" to="gripper_status"/>
+            <remap from="mission_info" to="mission_info"/>
+
+            <!-- service clients -->
+            <!-- <remap from="back_to_position_hold" to="back_to_position_hold"/> -->
+            <remap from="set_mode" to="pilot/set_mode"/>
+            <remap from="mission/pull" to="pilot/mission/pull"/>
+            <remap from="detector/terminate" to="detector/terminate"/>
+            <remap from="hdetect/terminate" to="hdetect/terminate"/>
+
+        </node>
+
+        <node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
+			<remap from="odom_px4" to="pilot/local_position/odom" />
+			<remap from="global_pose" to="pilot/global_position/global" />
+			<remap from="rangefinder" to="rangefinder" />
+			<remap from="estimated_odometry" to="odom" />
+			<remap from="avoidance_pose" to="mav_avoidance_pose" />
+			<param name="rate" value="30.0"/>
+			<param name="range_finder_enable" value="false"/>
+			<param name="fix_lat" value="26.5093660"/>
+			<param name="fix_long" value="80.2269306"/>
+		</node>
+
+        <node name="controller_switch_node" pkg="mav_utils" type="controller_switch_node" clear_params="true" output="screen">
+        </node>
+
+        <node name="router" pkg="imav_planner" type="router" output="screen">
+            
+            <!-- parameters -->
+            <rosparam file="$(find imav_planner)/cfg/planner.yaml" command="load" ns="" />
+            <param name="mav_name" value="$(arg mav_name)"/>
+
+            <!-- subscribers -->
+            <remap from="objects" to="object_poses"/>
+            <remap from="curr_state" to="planner/curr_state"/>
+            <remap from="global_pose" to="pilot/global_position/global"/>
+
+            <!-- publishers -->
+            <remap from="task" to="drop_info"/>
+            <remap from="data" to="data"/>
+
+        </node>
+<node pkg="mavros" type="mavros_node" name="pilot" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
+			<param name="fcu_url" value="$(arg fcu_url_pilot)" />
+			<param name="gcs_url" value="$(arg gcs_url_pilot)" />
+			<param name="fcu_protocol" value="$(arg fcu_protocol)" />
+			<param name="target_system_id" value="$(arg mav_id)" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_pluginlists.yaml" />
+			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_config.yaml" />
+		</node>
+
+    </group>
+
+	<include file="$(find detector)/launch/main.launch"/>
+
+
+</launch>
+
