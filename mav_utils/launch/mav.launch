@@ -80,9 +80,6 @@
 			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_pluginlists.yaml" />
 			<rosparam command="load" file="$(find mav_utils)/cfg/mavros/px4_config.yaml" />
 		</node>
-    
-
-       <node name="router" pkg="imav_planner" type="router" output="screen">
 
         <node name="router" pkg="imav_planner" type="router" output="screen">
 
@@ -102,9 +99,31 @@
             <remap from="data" to="data"/>
 
         </node>
+
+	<node name="detector" pkg="detector" type="detector_node" output="screen">
+      <param name="mav_name" value="$(arg mav_name)"/>
+      <rosparam file="$(find detector)/cfg/detector.yaml"/>
+      <rosparam file="$(env HOME)/.ros/camera_info/mv.yaml"/>
+      <remap from="image" to="/mv/image_raw"/>
+      <remap from="odometry" to="odom"/>
+      <remap from="bounding_boxes" to="bounding_boxes"/>
+      <remap from="object_poses" to="object_poses"/>
+      <remap from="undist_image" to="undist_image"/>
+      <remap from="marked_image" to="marked_image"/>
+    </node>
+	
+	<node pkg="helipad_det" type="hdetect" name="hdetect" output="screen" required="true">
+                        <rosparam file="$(find helipad_det)/cfg/params.yaml"/>
+                        <!-- Subscribed Topics -->
+                        <remap from="odom" to="pilot/local_position/odom"/>
+                        <remap from="image_raw" to="/mv/image_raw"/>
+                        <!-- Published Topics -->
+                        <remap from="detected_helipad" to="detected_helipad"/>
+                        <remap from="preprocessed_image" to="preprocessed_image"/>
+                        <remap from="helipad_position" to="helipad_position"/>
+      </node>
+
     </group>
 
-	<include file="$(find detector)/launch/main.launch"/>
-	<include file="$(find helipad_det)/launch/hdetect.launch"/>
 </launch>
 
