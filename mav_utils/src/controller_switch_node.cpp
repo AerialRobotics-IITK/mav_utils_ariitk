@@ -1,20 +1,20 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <mav_msgs/RollPitchYawrateThrust.h>
-#include <mav_utils_msgs/MissionInfo.h>
+#include <geometry_msgs/PointStamped.h>
 #include <mavros_msgs/GlobalPositionTarget.h>
 #include <mavros_msgs/State.h>
 #include <std_srvs/Empty.h>
 #include "ros/ros.h"
 
 mav_msgs::RollPitchYawrateThrust rpyth;
-mav_utils_msgs::MissionInfo missionInfo;
+geometry_msgs::PointStamped missionInfo;
 mavros_msgs::State mavState;
 
 void rpythCallback(const mav_msgs::RollPitchYawrateThrust::ConstPtr &msg) {
   rpyth = *msg;
 }
 
-void missionInfoCallback(const mav_utils_msgs::MissionInfo::ConstPtr &msg) {
+void missionInfoCallback(const geometry_msgs::PointStamped::ConstPtr &msg) {
   missionInfo = *msg;
 }
 
@@ -55,11 +55,11 @@ int main(int argc, char **argv) {
     nh.getParam("controller_switch_node/rate", rate);
     ros::Rate loopRate(rate);
 
-    if (missionInfo.use_local) {
+    if (1) {
       mavCommandPose.header = missionInfo.header;
-      mavCommandPose.pose.position = missionInfo.local_pose;
+      mavCommandPose.pose.position = missionInfo.point;
 
-      if (missionInfo.use_nmpc) {
+      if (0) {
         std_srvs::Empty backToPosition;
         if (backToPoseHoldClient.call(backToPosition))
           ROS_INFO("NMPC on");
@@ -72,14 +72,7 @@ int main(int argc, char **argv) {
         mavPoseLocalMavrosPub.publish(mavCommandPose);
     }
 
-    else {
-      mavCommandGlobalPose.header = missionInfo.header;
-      mavCommandGlobalPose.latitude = missionInfo.latitude;
-      mavCommandGlobalPose.longitude = missionInfo.longitude;
-      mavCommandGlobalPose.altitude = missionInfo.altitude;
-      mavCommandGlobalPose.yaw = 1.57;
-      mavPoseGlobalPub.publish(mavCommandGlobalPose);
-    }
+   
 
     loopRate.sleep();
     ros::spinOnce();
