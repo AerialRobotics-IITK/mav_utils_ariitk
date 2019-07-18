@@ -10,7 +10,8 @@
 <arg name="fcu_protocol" default="v2.0" />
 
     <group ns="$(arg mav_name)">
-	    <node name="planner" pkg="imav_planner" type="planner" output="screen" clear_params="true">
+
+        <node name="planner" pkg="imav_planner" type="planner" output="screen" clear_params="true">
 
             <!-- parameters -->
             <rosparam file="$(find imav_planner)/cfg/planner.yaml" command="load"/>
@@ -19,6 +20,7 @@
             <remap from="odometry" to="pilot/local_position/odom"/>
             <remap from="drop_info" to="drop_info"/>
             <remap from="home_info" to="home_pose"/>
+
             <remap from="object_poses" to="object_poses"/>
             <remap from="helipad" to="hdetect/helipad_position"/>
             <remap from="global_pose" to="pilot/global_position/global"/>
@@ -40,6 +42,7 @@
         </node>
 
   <node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
+
 			<remap from="odom_px4" to="pilot/local_position/odom" />
 			<remap from="global_pose" to="pilot/global_position/global" />
 			<remap from="rangefinder" to="rangefinder" />
@@ -80,7 +83,9 @@
     
 
        <node name="router" pkg="imav_planner" type="router" output="screen">
-            
+
+        <node name="router" pkg="imav_planner" type="router" output="screen">
+
             <!-- parameters -->
             <rosparam file="$(find imav_planner)/cfg/planner.yaml" command="load" ns="" />
             <param name="mav_name" value="$(arg mav_name)"/>
@@ -88,8 +93,9 @@
             <!-- subscribers -->
             <remap from="odometry" to="odom"/>
             <remap from="objects" to="object_poses"/>
-            <remap from="curr_state" to="planner/curr_state"/>
             <remap from="utm_pose" to="utm_pose"/>
+            <remap from="curr_state" to="planner/curr_state"/>
+            <remap from="global_pose" to="pilot/global_position/global"/>
 
             <!-- publishers -->
             <remap from="task" to="drop_info"/>
@@ -100,7 +106,5 @@
 
 	<include file="$(find detector)/launch/main.launch"/>
 	<include file="$(find helipad_det)/launch/hdetect.launch"/>
-
-
 </launch>
 
