@@ -8,11 +8,13 @@ StateEstimation::StateEstimation(const ros::NodeHandle &nh,
       range_finder_enable(false),
       fix_lat(26.519730),
       fix_long(80.232452) {
+  // ros params
   nh_private_.param("range_finder_enable", range_finder_enable,
                     range_finder_enable);
   nh_private_.param("fix_lat", fix_lat, fix_lat);
   nh_private_.param("fix_long", fix_long, fix_long);
 
+  // ros subscribers
   px4_odom_sub =
       nh_.subscribe("odom_px4", 1, &StateEstimation::odomCallback, this);
   global_pose_sub =
@@ -21,14 +23,17 @@ StateEstimation::StateEstimation(const ros::NodeHandle &nh,
   range_finder_sub = nh_.subscribe("range_finder", 1,
                                    &StateEstimation::rangeFinderCallback, this);
 
+  // ros pubishers
   utm_pose_pub = nh_.advertise<mav_utils_msgs::UTMPose>("utm_pose", 1, true);
   range_finder_odom_pub = nh_.advertise<nav_msgs::Odometry>("odom", 1, true);
   home_pose_pub =
       nh_.advertise<geometry_msgs::PointStamped>("home_pose", 1, true);
 
+  // ros service 
   home_reset_service = nh_.advertiseService(
       "home_reset", &StateEstimation::homePoseResetCallback, this);
 
+  // UTM pose of fixed point
   GeographicLib::UTMUPS::Forward(fix_lat, fix_long, zone_fix, northp_fix, x_fix,
                                  y_fix, conv_fix, scale_fix);
 }

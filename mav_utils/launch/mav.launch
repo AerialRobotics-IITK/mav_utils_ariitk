@@ -2,12 +2,12 @@
 <launch>
     
     <arg name="mav_name" default="magnus"/>
-<arg name="mav_id" default="1"/>
-<arg name="log_output_mavros" default="log" />
+    <arg name="mav_id" default="1"/>
+    <arg name="log_output_mavros" default="log" />
     <arg name="respawn_mavros" default="false" />
- <arg name="fcu_url_pilot" default="/dev/ttyUSB0:921600" />
+    <arg name="fcu_url_pilot" default="/dev/ttyUSB0:921600" />
     <arg name="gcs_url_pilot" default="udp://@192.168.0.125:14550" />
-<arg name="fcu_protocol" default="v2.0" />
+    <arg name="fcu_protocol" default="v2.0" />
 
     <group ns="$(arg mav_name)">
 
@@ -41,7 +41,7 @@
 
         </node>
 
-  <node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
+         <node name="state_estimation_node" pkg="mav_utils" type="state_estimation_node" clear_params="true" output="screen">
 
 			<remap from="odom_px4" to="pilot/local_position/odom" />
 			<remap from="global_pose" to="pilot/global_position/global" />
@@ -52,27 +52,29 @@
 			<param name="range_finder_enable" value="false"/>
 			<param name="fix_lat" value="26.5093660"/>
 			<param name="fix_long" value="80.2269306"/>
-		</node>
-	<node pkg="mav_utils" type="home_reset.sh" name="home_reset" clear_params="true"/>
-    <node name="avoidance_node" type="avoidance_node" pkg="avoidance" output="screen">
-        <param name="mission_obs" value="true"/>
-        <param name="t_to_hit_thresh" value="5"/>
-        <param name="min_dist" value="3"/>
-        <param name="flight_alt" value="5"/>
-        <param name="delta_z" value="0.2"/>
-        <param name="mav_id" value="2"/>
-        <remap from="command/pose" to="pilot/setpoint_position/local"/>
-        <remap from="pose_mav1" to="utm_pose"/>
-        <remap from="pose_mav2" to="/uav1/utm_pose"/>
-        <remap from="pose_mav3" to="/uav2/utm_pose"/>
-    </node>
+        </node>
+	    
+        <node pkg="mav_utils" type="home_reset.sh" name="home_reset" clear_params="true"/>
+        
+        <node name="avoidance_node" type="avoidance_node" pkg="avoidance" output="screen">
+            <param name="mission_obs" value="true"/>
+            <param name="t_to_hit_thresh" value="5"/>
+            <param name="min_dist" value="3"/>
+            <param name="flight_alt" value="5"/>
+            <param name="delta_z" value="0.2"/>
+            <param name="mav_id" value="2"/>
+            <remap from="command/pose" to="pilot/setpoint_position/local"/>
+            <remap from="pose_mav1" to="utm_pose"/>
+            <remap from="pose_mav2" to="/uav1/utm_pose"/>
+            <remap from="pose_mav3" to="/uav2/utm_pose"/>
+        </node>
 
 <!-- <node name="controller_switch_node" pkg="mav_utils" type="controller_switch_node" clear_params="true" output="screen"/> -->
 
 
       
 
-<node pkg="mavros" type="mavros_node" name="pilot" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
+        <node pkg="mavros" type="mavros_node" name="pilot" required="$(eval not respawn_mavros)" clear_params="true" output="$(arg log_output_mavros)" respawn="$(arg respawn_mavros)">
 			<param name="fcu_url" value="$(arg fcu_url_pilot)" />
 			<param name="gcs_url" value="$(arg gcs_url_pilot)" />
 			<param name="fcu_protocol" value="$(arg fcu_protocol)" />
@@ -100,28 +102,28 @@
 
         </node>
 
-	<node name="detector" pkg="detector" type="detector_node" output="screen">
-      <param name="mav_name" value="$(arg mav_name)"/>
-      <rosparam file="$(find detector)/cfg/detector.yaml"/>
-      <rosparam file="$(env HOME)/.ros/camera_info/mv.yaml"/>
-      <remap from="image" to="/mv/image_raw"/>
-      <remap from="odometry" to="odom"/>
-      <remap from="bounding_boxes" to="bounding_boxes"/>
-      <remap from="object_poses" to="object_poses"/>
-      <remap from="undist_image" to="undist_image"/>
-      <remap from="marked_image" to="marked_image"/>
-    </node>
+	    <node name="detector" pkg="detector" type="detector_node" output="screen">
+            <param name="mav_name" value="$(arg mav_name)"/>
+            <rosparam file="$(find detector)/cfg/detector.yaml"/>
+            <rosparam file="$(env HOME)/.ros/camera_info/mv.yaml"/>
+            <remap from="image" to="/mv/image_raw"/>
+            <remap from="odometry" to="odom"/>
+            <remap from="bounding_boxes" to="bounding_boxes"/>
+            <remap from="object_poses" to="object_poses"/>
+            <remap from="undist_image" to="undist_image"/>
+            <remap from="marked_image" to="marked_image"/>
+        </node>
 	
-	<node pkg="helipad_det" type="hdetect" name="hdetect" output="screen" required="true">
-                        <rosparam file="$(find helipad_det)/cfg/params.yaml"/>
-                        <!-- Subscribed Topics -->
-                        <remap from="odom" to="pilot/local_position/odom"/>
-                        <remap from="image_raw" to="/mv/image_raw"/>
-                        <!-- Published Topics -->
-                        <remap from="detected_helipad" to="detected_helipad"/>
-                        <remap from="preprocessed_image" to="preprocessed_image"/>
-                        <remap from="helipad_position" to="helipad_position"/>
-      </node>
+	    <node pkg="helipad_det" type="hdetect" name="hdetect" output="screen" required="true">
+            <rosparam file="$(find helipad_det)/cfg/params.yaml"/>
+            <!-- Subscribed Topics -->
+            <remap from="odom" to="pilot/local_position/odom"/>
+            <remap from="image_raw" to="/mv/image_raw"/>
+            <!-- Published Topics -->
+            <remap from="detected_helipad" to="detected_helipad"/>
+            <remap from="preprocessed_image" to="preprocessed_image"/>
+            <remap from="helipad_position" to="helipad_position"/>
+        </node>
 
     </group>
 
