@@ -54,7 +54,7 @@
 			<param name="fix_long" value="80.2269306"/>
         </node>
 	    
-        <node pkg="mav_utils" type="home_reset.sh" name="home_reset" clear_params="true"/>
+        <node pkg="mav_utils" type="home_reset.sh" name="home_reset" clear_params="true" args="$(arg mav_name)"/>
         
         <node name="avoidance_node" type="avoidance_node" pkg="avoidance" output="screen">
             <param name="mission_obs" value="true"/>

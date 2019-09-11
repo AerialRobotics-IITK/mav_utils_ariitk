@@ -1,3 +1,3 @@
 #!/bin/bash
 sleep 2s
-rosservice call /magnus/home_reset "{}"
+rosservice call /$1/home_reset "{}"
