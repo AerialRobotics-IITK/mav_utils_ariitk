@@ -1,3 +1,3 @@
 #!/bin/bash
 sleep 2s
-rosservice call /$1/home_reset "{}"
+rosservice call /$MAV_NAME/home_reset "{}"
