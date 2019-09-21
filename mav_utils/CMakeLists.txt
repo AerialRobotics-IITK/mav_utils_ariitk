@@ -35,4 +35,8 @@ target_link_libraries(geoid_test ${GeographicLib_LIBRARIES})
 # EXPORT #
 ##########
 cs_install()
+
+cs_install_scripts(scripts/odmtag.py)
+cs_install_scripts(scripts/piexif.py)
+
 cs_export()

@@ -21,6 +21,7 @@
 
   <depend>cmake_modules</depend>
   <depend>roscpp</depend>
+  <depend>rospy</depend>
   <depend>mav_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>std_msgs</depend>
