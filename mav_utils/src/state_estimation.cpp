@@ -19,16 +19,16 @@ StateEstimation::StateEstimation(const ros::NodeHandle &nh,
                     this, ros::TransportHints().tcpNoDelay());
   range_finder_sub = nh_.subscribe("range_finder", 1,
                                    &StateEstimation::rangeFinderCallback, this);
-  router_sub =
-      nh_.subscribe("router", 1, &StateEstimation::routerCallback, this);
+  // router_sub =
+  //     nh_.subscribe("router", 1, &StateEstimation::routerCallback, this);
 
   // ros pubishers
   utm_pose_pub = nh_.advertise<mav_utils_msgs::UTMPose>("utm_pose", 1, true);
   range_finder_odom_pub = nh_.advertise<nav_msgs::Odometry>("odom", 1, true);
   home_pose_pub =
       nh_.advertise<geometry_msgs::PointStamped>("home_pose", 1, true);
-  obj_gps_pub =
-      nh_.advertise<mav_utils_msgs::RouterInfo>("objects/gps", 1, true);
+  // obj_gps_pub =
+  //     nh_.advertise<mav_utils_msgs::RouterInfo>("objects/gps", 1, true);
 
   // ros service
   home_reset_service = nh_.advertiseService(
@@ -51,10 +51,10 @@ void StateEstimation::odomCallback(const nav_msgs::Odometry &msg) {
 void StateEstimation::rangeFinderCallback(const sensor_msgs::Range &msg) {
   range_finder = msg;
 }
-void StateEstimation::routerCallback(const mav_utils_msgs::RouterInfo &msg) {
-  router_info = msg;
-  objGPSPubCallback();
-}
+// void StateEstimation::routerCallback(const mav_utils_msgs::RouterInfo &msg) {
+//   router_info = msg;
+//   objGPSPubCallback();
+// }
 
 bool StateEstimation::homePoseResetCallback(std_srvs::Empty::Request &req,
                                             std_srvs::Empty::Response &res) {
@@ -109,40 +109,40 @@ void StateEstimation::utmPosePubCallback() {
   utm_pose_pub.publish(utm_pose);
 }
 
-void StateEstimation::objGPSPubCallback() {
-  int num = router_info.router_data.size();
+// void StateEstimation::objGPSPubCallback() {
+//   int num = router_info.router_data.size();
 
-  if (num == 0)
-    return;
-  else {
-    mav_utils_msgs::RouterInfo gps_info;
-    mav_utils_msgs::RouterData gps_data;
+//   if (num == 0)
+//     return;
+//   else {
+//     mav_utils_msgs::RouterInfo gps_info;
+//     mav_utils_msgs::RouterData gps_data;
 
-    double obj_lat, obj_lon, x, y;
+//     double obj_lat, obj_lon, x, y;
 
-    gps_info.header = router_info.header;
+//     gps_info.header = router_info.header;
 
-    for (int i = 0; i < num; i++) {
-      obj_lat = obj_lon = x = y = 0;
+//     for (int i = 0; i < num; i++) {
+//       obj_lat = obj_lon = x = y = 0;
 
-      gps_data.id = router_info.router_data.at(i).id;
-      gps_info.object_id.push_back(gps_data.id);
+//       gps_data.id = router_info.router_data.at(i).id;
+//       gps_info.object_id.push_back(gps_data.id);
 
-      x = gps_info.router_data.at(i).position.x + x_fix;
-      y = gps_info.router_data.at(i).position.y + y_fix;
+//       x = gps_info.router_data.at(i).position.x + x_fix;
+//       y = gps_info.router_data.at(i).position.y + y_fix;
 
-      // Assuming all coordinates are in same zone and northp.
-      GeographicLib::UTMUPS::Reverse(zone_fix, northp_fix, x, y, obj_lat,
-                                     obj_lon);
+//       // Assuming all coordinates are in same zone and northp.
+//       GeographicLib::UTMUPS::Reverse(zone_fix, northp_fix, x, y, obj_lat,
+//                                      obj_lon);
 
-      gps_data.position.x = obj_lat;
-      gps_data.position.y = obj_lon;
-      gps_data.position.z = 0;
+//       gps_data.position.x = obj_lat;
+//       gps_data.position.y = obj_lon;
+//       gps_data.position.z = 0;
 
-      gps_info.router_data.push_back(gps_data);
-    }
+//       gps_info.router_data.push_back(gps_data);
+//     }
 
-    obj_gps_pub.publish(gps_info);
-  }
-}
+//     obj_gps_pub.publish(gps_info);
+//   }
+// }
 } // namespace mav_utils
