@@ -14,17 +14,17 @@
 
     <arg name="camera_info_path" value="$(find mav_utils)/cfg/cam/ocam_640x480.yaml" if="$(eval mav_cam_name == 'ocam')" />
     <arg name="camera_info_path" value="$(find mav_utils)/cfg/cam/mv.yaml" if="$(eval mav_cam_name == 'bluefox')" />
-    <arg name="image_topic" value="/camera/image_raw" if="$(eval mav_cam_name == 'ocam')" />
-    <arg name="image_topic" value="/mv/image_raw" if="$(eval mav_cam_name == 'bluefox')" />
+    <arg name="image_topic" value="camera/image_raw" if="$(eval mav_cam_name == 'ocam')" />
+    <arg name="image_topic" value="mv/image_raw" if="$(eval mav_cam_name == 'bluefox')" />
 
     <arg name="uav2_utm_pose" value="/spedix/utm_pose" if="$(eval mav_name == 'magnus')" />
-    <arg name="uav3_utm_pose" value="/vega/utm_pose" if="$(eval mav_name == 'magnus')" />
+    <arg name="uav3_utm_pose" value="/f450/utm_pose" if="$(eval mav_name == 'magnus')" />
 
     <arg name="uav2_utm_pose" value="/magnus/utm_pose" if="$(eval mav_name == 'spedix')" />
-    <arg name="uav3_utm_pose" value="/vega/utm_pose" if="$(eval mav_name == 'spedix')" />
+    <arg name="uav3_utm_pose" value="/f450/utm_pose" if="$(eval mav_name == 'spedix')" />
 
-    <arg name="uav2_utm_pose" value="/magnus/utm_pose" if="$(eval mav_name == 'vega')" />
-    <arg name="uav3_utm_pose" value="/spedix/utm_pose" if="$(eval mav_name == 'vega')" />
+    <arg name="uav2_utm_pose" value="/magnus/utm_pose" if="$(eval mav_name == 'f450')" />
+    <arg name="uav3_utm_pose" value="/spedix/utm_pose" if="$(eval mav_name == 'f450')" />
 
     <group ns="$(arg mav_name)">
 
@@ -129,7 +129,8 @@
         </node>
 	
 	    <node pkg="helipad_det" type="hdetect" name="hdetect" output="screen" required="true">
-            <rosparam file="$(find helipad_det)/cfg/params.yaml"/>
+            <rosparam file="$(find helipad_det)/cfg/params.yaml"/>¬
+            <rosparam file="$(arg camera_info_path)"/>
             <!-- Subscribed Topics -->
             <remap from="odom" to="pilot/local_position/odom"/>
             <remap from="image_raw" to="$(arg image_topic)"/>
