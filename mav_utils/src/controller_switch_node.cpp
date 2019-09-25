@@ -1,10 +1,10 @@
+#include "ros/ros.h"
+#include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <mav_msgs/RollPitchYawrateThrust.h>
-#include <geometry_msgs/PointStamped.h>
 #include <mavros_msgs/GlobalPositionTarget.h>
 #include <mavros_msgs/State.h>
 #include <std_srvs/Empty.h>
-#include "ros/ros.h"
 
 mav_msgs::RollPitchYawrateThrust rpyth;
 geometry_msgs::PointStamped missionInfo;
@@ -71,8 +71,6 @@ int main(int argc, char **argv) {
       } else
         mavPoseLocalMavrosPub.publish(mavCommandPose);
     }
-
-   
 
     loopRate.sleep();
     ros::spinOnce();

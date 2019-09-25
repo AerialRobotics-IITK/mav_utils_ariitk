@@ -1,6 +1,6 @@
 #include "mav_utils/state_estimation.h"
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ros::init(argc, argv, "state_estimation_node");
 
   ros::NodeHandle nh("");

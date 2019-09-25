@@ -1,8 +1,8 @@
 // Small example of using the GeographicLib::Geodesic class
-#include <ros/ros.h>
 #include <GeographicLib/Geodesic.hpp>
 #include <GeographicLib/UTMUPS.hpp>
 #include <iostream>
+#include <ros/ros.h>
 
 using namespace std;
 using namespace GeographicLib;
@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
   const Geodesic &geod = Geodesic::WGS84();
   // Distance from JFK to LHR
   double lat1 = 50,
-         lon1 = 50,                  // JFK Airport
-      lat2 = 50.001, lon2 = 50.001;  // LHR Airport
+         lon1 = 50,                 // JFK Airport
+      lat2 = 50.001, lon2 = 50.001; // LHR Airport
   double s12;
   geod.Inverse(lat1, lon1, lat2, lon2, s12);
   cout << s12 << " m\n";
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     // See also example-GeoCoords.cpp
     {
       // Sample forward calculation
-      double lat = 33.3, lon = 44.4;  // Baghdad
+      double lat = 33.3, lon = 44.4; // Baghdad
       int zone;
       bool northp;
       double x1, y1, x2, y2, c1, c2, k1, k2;
